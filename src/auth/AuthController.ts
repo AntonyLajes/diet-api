@@ -27,4 +27,22 @@ export class AuthController{
             return { code: 400, body: { message: 'Register unexpected error.' } }
         }
     }
+
+    async login(request: FastifyRequest<{Body: UserRequestBodyDTO}>){
+        const { email, password} = request.body
+        if(!email || !password) return { code: 400, body: {message: 'Properties email and password is required.'} }
+
+        try {
+            const user: UserRequestBodyDTO = {
+                email,
+                password
+            }
+            const loggedUser = await this.authService.login(user)
+            return { code: 200, body: loggedUser }
+
+        } catch (error) {
+            if(error instanceof AuthError) return { code: 401, body: { message: error.message} }
+            return { code: 401, body: { message: 'Login unexpected error.'} }
+        }
+    }
 }

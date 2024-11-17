@@ -15,4 +15,9 @@ export function autenticationRoutes(server: FastifyInstance){
         reply.code(code).send(body)
     })
 
+    server.post('/login', async (req, reply) => {
+        const { code, body } = await authController.login(req as FastifyRequest<{Body: UserRequestBodyDTO}>)
+        reply.code(code).send(body)
+    })
+
 }
