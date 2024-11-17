@@ -25,13 +25,13 @@ export class AuthService {
         return { token, user: userExists }
     }
 
-    async verifyToken(token: string){
-        const decodedToken = jwt.verify(token, "autenticacao-jwt") as { id?: string, email?: string}
-        console.log(`decodedToken: ${decodedToken}`)
-
-        if(!decodedToken.email) return undefined
-
-        const user = await this.userRepository.findByEmail(decodedToken.email)
-        return user
+    async verifyToken(token: string): Promise<UserDTO | undefined>{
+        const decodedToken = jwt.verify(token, "autenticacao-jwt")
+        if(typeof decodedToken !== "string" && decodedToken.email){
+            const user = await this.userRepository.findByEmail(decodedToken.email)
+            return user
+        }
+        
+        return undefined
     }
 }
