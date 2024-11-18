@@ -1,12 +1,20 @@
-import { FastifyInstance } from "fastify"
+import { FastifyInstance, FastifyRequest } from "fastify"
 import { AuthService } from "../auth/AuthService"
 import { UserRepository } from "../user/UserRepository"
 import { knex } from "../database"
+import { DietRepository } from "../diets/DietRepository"
+import { DietService } from "../diets/DietService"
+import { DietController } from "../diets/DietController"
+import { DietRequestBodyDTO } from "../diets/dtos/DietRequestBodyDTO"
 
 export async function dietsRoutes(server: FastifyInstance){
 
     const userRepository = new UserRepository(knex)
     const authService = new AuthService(userRepository)
+
+    const dietRepository = new DietRepository(knex)
+    const dietService = new DietService(dietRepository)
+    const dietController = new DietController(dietService)
 
     server.addHook('preHandler', async (req, reply) => {
         const token = req.headers.authorization?.replace(/^Bearer /, "")
@@ -18,8 +26,11 @@ export async function dietsRoutes(server: FastifyInstance){
         req.user = user
     })
 
-    server.get('/', async (req, reply) => {
-        reply.code(200).send(req.user)
+    server.post('/new', async (req, reply) => {
+        const { code, body } = await dietController.save(req as FastifyRequest<{Body: DietRequestBodyDTO}>)
+        console.log(`body`, body);
+        
+        reply.code(code).send(body)
     })
 
 }
