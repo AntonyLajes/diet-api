@@ -6,6 +6,7 @@ import { DietRepository } from "../diets/DietRepository"
 import { DietService } from "../diets/DietService"
 import { DietController } from "../diets/DietController"
 import { DietRequestBodyDTO } from "../diets/dtos/DietRequestBodyDTO"
+import { DietParamsDTO } from "../diets/dtos/DietParamsDTO"
 
 export async function dietsRoutes(server: FastifyInstance){
 
@@ -30,6 +31,12 @@ export async function dietsRoutes(server: FastifyInstance){
         const { code, body } = await dietController.save(req as FastifyRequest<{Body: DietRequestBodyDTO}>)
         console.log(`body`, body);
         
+        reply.code(code).send(body)
+    })
+
+    server.put('/update/:id', async (req, reply) => {
+        const { code, body } = await dietController.update(req as FastifyRequest<{Body: DietRequestBodyDTO, Params: DietParamsDTO}>)
+
         reply.code(code).send(body)
     })
 

@@ -2,6 +2,7 @@ import { FastifyRequest } from "fastify";
 import { DietService } from "./DietService";
 import { DietRequestBodyDTO } from "./dtos/DietRequestBodyDTO";
 import { randomUUID } from "crypto";
+import { DietParamsDTO } from "./dtos/DietParamsDTO";
 
 export class DietController{
 
@@ -29,6 +30,30 @@ export class DietController{
             
             return { code: 400, body: { message: 'Unexpected error occurred.' } }
         }
+    }
+
+    async update(request: FastifyRequest<{Body: DietRequestBodyDTO, Params: DietParamsDTO}>){
+        const { title, description, on_a_diet } = request.body
+        console.log(`id:`, request.params);
+        
+        const { id } = request.params
+
+        if(!title || !description || typeof on_a_diet === "undefined" || !id) return  { code: 400, body: { message: 'Parameters title, description, on_a_diet and id are required.' } }
+
+        const user = request.user
+        if(!user) return { code: 401, body: { message: 'Unauthorized: user not logged in.'}}
+
+        const toUpdateDiet: DietDTO = {
+            id,
+            title,
+            description,
+            on_a_diet,
+            user_id: user.id
+        }
+
+        const updatedDiet = await this.dietService.update(toUpdateDiet)
+        
+        return { code: 200, body: updatedDiet }
     }
 
 }
