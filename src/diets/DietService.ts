@@ -34,4 +34,8 @@ export class DietService{
         return await this.dietRepository.findById(userId, id)
     }
 
+    async findTotalDiets(userId: string){
+        return await this.findAll(userId)
+    }
+
 }

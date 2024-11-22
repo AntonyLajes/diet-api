@@ -87,4 +87,13 @@ export class DietController{
         return { code: 200, body: diets}
     }
 
+    async findTotalDiets(request: FastifyRequest){
+        const user = request.user
+        if(!user) return { code: 401, body: { message: 'Unauthorized: user not logged in.' } }
+
+        const totalDiets = (await this.dietService.findTotalDiets(user.id)).length
+
+        return { code: 200, body: { totalDiets } }
+    }
+
 }

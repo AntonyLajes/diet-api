@@ -50,4 +50,9 @@ export async function dietsRoutes(server: FastifyInstance){
         reply.code(code).send(body)
     })
 
+    server.get('/total', async (req, reply) => {
+        const { code, body } = await dietController.findTotalDiets(req)
+        reply.code(code).send(body)
+    })
+
 }
