@@ -40,4 +40,10 @@ export async function dietsRoutes(server: FastifyInstance){
         reply.code(code).send(body)
     })
 
+    server.delete('/delete/:id', async (req, reply) => {
+        console.log('req =>', req)
+        const { code, body } = await dietController.delete(req as FastifyRequest<{Params: DietParamsDTO}>)
+        reply.code(code).send(body)
+    })
+
 }

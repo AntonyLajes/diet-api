@@ -21,4 +21,8 @@ export class DietRepository {
             .returning('*')
     }
 
+    async delete(id: string){
+        return await this.database('diets').where('id', id).delete()
+    }
+
 }

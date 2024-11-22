@@ -1,3 +1,4 @@
+import DietError from "../error/DietError";
 import { DietRepository } from "./DietRepository";
 
 export class DietService{
@@ -16,6 +17,13 @@ export class DietService{
             on_a_diet: diet.on_a_diet,
             user_id: diet.user_id
         })
+    }
+
+    async delete(id: string){
+        const deleteCode = await this.dietRepository.delete(id)
+        if(deleteCode === 0) throw new DietError('Diet not found.')
+
+        return deleteCode
     }
 
 }

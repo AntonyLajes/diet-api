@@ -3,6 +3,7 @@ import { DietService } from "./DietService";
 import { DietRequestBodyDTO } from "./dtos/DietRequestBodyDTO";
 import { randomUUID } from "crypto";
 import { DietParamsDTO } from "./dtos/DietParamsDTO";
+import DietError from "../error/DietError";
 
 export class DietController{
 
@@ -41,7 +42,7 @@ export class DietController{
         if(!title || !description || typeof on_a_diet === "undefined" || !id) return  { code: 400, body: { message: 'Parameters title, description, on_a_diet and id are required.' } }
 
         const user = request.user
-        if(!user) return { code: 401, body: { message: 'Unauthorized: user not logged in.'}}
+        if(!user) return { code: 401, body: { message: 'Unauthorized: user not logged in.' } }
 
         const toUpdateDiet: DietDTO = {
             id,
@@ -54,6 +55,25 @@ export class DietController{
         const updatedDiet = await this.dietService.update(toUpdateDiet)
         
         return { code: 200, body: updatedDiet }
+    }
+
+    async delete(request: FastifyRequest<{Params: DietParamsDTO}>){
+        const { id } = request.params
+        if(!id) return { code: 400, body: { message: 'Parameters id is required.'} }
+
+        const user = request.user
+        if(!user) return { code: 401, body: { message: 'Unauthorized: user not logged in.' } }
+        
+        try {
+            const deletedStatus = await this.dietService.delete(id)
+            const code = deletedStatus === 1 ? 200 : 204
+
+            return { code, body: deletedStatus}
+        } catch (error) {
+            if(error instanceof DietError){
+                return { code: 404, body: error.message}
+            }
+        }
     }
 
 }
