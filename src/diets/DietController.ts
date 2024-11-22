@@ -73,7 +73,17 @@ export class DietController{
             if(error instanceof DietError){
                 return { code: 404, body: error.message}
             }
+            return { code: 404, body: { message: 'Unexpected error occurred.' } }
         }
+    }
+
+    async findByUserId(request: FastifyRequest){
+        const user = request.user
+        if(!user) return { code: 401, body: { message: 'Unauthorized: user not logged in.' } }
+
+        const diets = await this.dietService.findByUserId(user.id)
+
+        return { code: 200, body: diets}
     }
 
 }

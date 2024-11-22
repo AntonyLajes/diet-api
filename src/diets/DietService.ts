@@ -26,4 +26,8 @@ export class DietService{
         return deleteCode
     }
 
+    async findByUserId(userId: string){
+        return await this.dietRepository.findByUserId(userId)
+    }
+
 }
