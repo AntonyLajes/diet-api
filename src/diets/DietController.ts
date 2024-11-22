@@ -77,11 +77,12 @@ export class DietController{
         }
     }
 
-    async findByUserId(request: FastifyRequest){
+    async findAll(request: FastifyRequest<{Params: DietParamsDTO}>){
         const user = request.user
         if(!user) return { code: 401, body: { message: 'Unauthorized: user not logged in.' } }
 
-        const diets = await this.dietService.findByUserId(user.id)
+        const { id } = request.params
+        const diets = id ? await this.dietService.findById(user.id, id) : await this.dietService.findAll(user.id)
 
         return { code: 200, body: diets}
     }

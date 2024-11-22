@@ -26,8 +26,12 @@ export class DietService{
         return deleteCode
     }
 
-    async findByUserId(userId: string){
-        return await this.dietRepository.findByUserId(userId)
+    async findAll(userId: string){
+        return await this.dietRepository.findAll(userId)
+    }
+
+    async findById(userId: string, id: string){
+        return await this.dietRepository.findById(userId, id)
     }
 
 }

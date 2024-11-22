@@ -25,8 +25,12 @@ export class DietRepository {
         return await this.database('diets').where('id', id).delete()
     }
 
-    async findByUserId(userId: string){
+    async findAll(userId: string){
         return await this.database('diets').where('user_id', userId).select('*')
+    }
+
+    async findById(userId: string, id: string){
+        return await this.database('diets').where({id: id, user_id: userId}).returning("*")
     }
 
 }
