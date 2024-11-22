@@ -33,4 +33,8 @@ export class DietRepository {
         return await this.database('diets').where({id: id, user_id: userId}).returning("*")
     }
 
+    async findByOnADiet(userId: string, on_a_diet: boolean){
+        return await this.database('diets').where({ user_id: userId, on_a_diet: on_a_diet}).returning("*")
+    }
+
 }

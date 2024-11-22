@@ -4,6 +4,7 @@ import { DietRequestBodyDTO } from "./dtos/DietRequestBodyDTO";
 import { randomUUID } from "crypto";
 import { DietParamsDTO } from "./dtos/DietParamsDTO";
 import DietError from "../error/DietError";
+import { DietQueryParamsDTO } from "./dtos/DietQueryParamsDTO";
 
 export class DietController{
 
@@ -94,6 +95,27 @@ export class DietController{
         const totalDiets = (await this.dietService.findTotalDiets(user.id)).length
 
         return { code: 200, body: { totalDiets } }
+    }
+
+    async findByOnADiet(request: FastifyRequest<{Querystring: DietQueryParamsDTO}>){
+        const { on_a_diet } = request.query
+        if(!on_a_diet) return { code: 400, body: { message: 'Parameter on_a_diet is required.' } }
+
+        const user = request.user
+        if(!user) return { code: 401, body: { message: 'Unauthored: user not logged in.'}}
+
+        const onADiet = await this.dietService.findOnADiet(user.id, on_a_diet)
+
+        return { code: 200, body: onADiet}
+    }
+
+    async findBestSequence(request: FastifyRequest){
+        const user = request.user
+        if(!user) return { code: 400, body: { message: 'Parameter on_a_diet is required.' } }
+
+        const bestSequence = await this.dietService.findBestSequence(user.id)
+
+        return { code: 200, body: { bestSequence } }
     }
 
 }

@@ -38,4 +38,27 @@ export class DietService{
         return await this.findAll(userId)
     }
 
+    async findOnADiet(userId: string, on_a_diet: boolean){
+        return await this.dietRepository.findByOnADiet(userId, on_a_diet)
+    }
+
+    async findBestSequence(userId: string){
+        const diets: DietDTO[] = await this.dietRepository.findAll(userId)
+        
+        let bestSequencyDiets: DietDTO[] = []
+        let currentSequencyDiets: DietDTO[] = []
+        for(const diet of diets){
+            if(diet.on_a_diet){
+                currentSequencyDiets.push(diet)
+                if(currentSequencyDiets.length> bestSequencyDiets.length){
+                    bestSequencyDiets = [...currentSequencyDiets]
+                }
+            }else{
+                currentSequencyDiets = []
+            }
+        }
+
+        return bestSequencyDiets
+    }
+
 }

@@ -7,6 +7,7 @@ import { DietService } from "../diets/DietService"
 import { DietController } from "../diets/DietController"
 import { DietRequestBodyDTO } from "../diets/dtos/DietRequestBodyDTO"
 import { DietParamsDTO } from "../diets/dtos/DietParamsDTO"
+import { DietQueryParamsDTO } from "../diets/dtos/DietQueryParamsDTO"
 
 export async function dietsRoutes(server: FastifyInstance){
 
@@ -52,6 +53,16 @@ export async function dietsRoutes(server: FastifyInstance){
 
     server.get('/total', async (req, reply) => {
         const { code, body } = await dietController.findTotalDiets(req)
+        reply.code(code).send(body)
+    })
+
+    server.get('/', async (req, reply) => {
+        const { code, body } = await dietController.findByOnADiet(req as FastifyRequest<{Querystring: DietQueryParamsDTO}>)
+        reply.code(code).send(body)
+    })
+
+    server.get('/best_sequence', async (req, reply) => {
+        const { code, body } = await dietController.findBestSequence(req as FastifyRequest)
         reply.code(code).send(body)
     })
 
