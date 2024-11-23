@@ -56,7 +56,7 @@ export async function dietsRoutes(server: FastifyInstance){
         reply.code(code).send(body)
     })
 
-    server.get('/', async (req, reply) => {
+    server.get('/search', async (req, reply) => {
         const { code, body } = await dietController.findByOnADiet(req as FastifyRequest<{Querystring: DietQueryParamsDTO}>)
         reply.code(code).send(body)
     })
